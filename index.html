@@ -1,12 +1,52 @@
+
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>LexiAI - المساعد القانوني</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LexiAI - دردشة الذكاء الاصطناعي</title>
+  <style>
+    body { font-family: Tahoma, sans-serif; background: #f5f5f5; margin: 0; padding: 0; }
+    .container { max-width: 800px; margin: auto; padding: 2rem; background: white; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+    h1 { text-align: center; color: #222; }
+    .chat-box { border: 1px solid #ccc; padding: 1rem; height: 400px; overflow-y: scroll; background: #fafafa; }
+    .input-area { display: flex; margin-top: 1rem; }
+    input[type="text"] { flex: 1; padding: 0.5rem; border: 1px solid #ccc; border-radius: 5px; }
+    button { padding: 0.5rem 1rem; margin-right: 0.5rem; background: #007bff; color: white; border: none; border-radius: 5px; }
+    .message { margin-bottom: 1rem; }
+    .message.user { text-align: right; color: #007bff; }
+    .message.bot { text-align: left; color: #444; }
+  </style>
 </head>
 <body>
-  <h1>مرحبًا بك في LexiAI</h1>
-  <p>هذا الموقع قيد التطوير.</p>
+  <div class="container">
+    <h1>مرحبًا بك في LexiAI، Faraj</h1>
+    <div class="chat-box" id="chat-box"></div>
+    <div class="input-area">
+      <button onclick="sendMessage()">إرسال</button>
+      <input type="text" id="user-input" placeholder="اكتب رسالتك هنا...">
+    </div>
+  </div>
+
+  <script>
+    async function sendMessage() {
+      const input = document.getElementById("user-input");
+      const message = input.value;
+      if (!message) return;
+
+      const box = document.getElementById("chat-box");
+      box.innerHTML += `<div class='message user'>${message}</div>`;
+      input.value = "";
+
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message })
+      });
+      const data = await response.json();
+      box.innerHTML += `<div class='message bot'>${data.reply}</div>`;
+      box.scrollTop = box.scrollHeight;
+    }
+  </script>
 </body>
 </html>
